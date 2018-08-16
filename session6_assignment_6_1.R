@@ -27,14 +27,14 @@ full<-bind_rows(train,test)
 full$Fsize <- full$SibSp + full$Parch + 1
 
 strsplit(full$Name, split = '[.,]')[[1]]
-full$surname<-sapply(full$Name, FUN = function(x){strsplit(x,split = '[,.]')[[1]][1]})
-full$Family <- paste(full$surname,full$Fsize, sep='_')
+full$surname<-sapply(full$Name, FUN = function(x){strsplit(x,split = '[,.]')[[1]][1]}) #list of titles that represents families
+full$Family <- paste(full$surname,full$Fsize, sep='_') #family members
 histogram(full$Fsize,full$surname)
 hist(unique(full$Fsize, incomparables = TRUE))
 
 #b. Represent the proportion of people survived from the family size using a graph. 
 
-     # this incuding the survived list of NA
+     # this incuding the survived list of NA from test data, full$survived is binded data of train and test data
 
 full$Survived<-factor(full$Survived,levels = c(0,1),labels = c("yes","no"))
 
