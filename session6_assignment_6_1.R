@@ -34,10 +34,29 @@ hist(unique(full$Fsize, incomparables = TRUE))
 
 #b. Represent the proportion of people survived from the family size using a graph. 
 
+     # this incuding the survived list of NA
+
+full$Survived<-factor(full$Survived,levels = c(0,1),labels = c("yes","no"))
+
+gplot <- ggplot(data = full,mapping = aes(x = Fsize, fill=full$Survived )) +
+  geom_bar(position = "dodge", width = 1) +	       
+  ylab("Number of passengers") + xlab("size") +	        
+  theme_bw() 
+
+
+      #considering the samily size in numeric
+
+ggplot(full, mapping=aes(x = Fsize, fill = factor(Survived))) +theme(legend.title = element_blank())+
+  geom_bar(width = 3,fill="blue", color="green") +
+  ylab("passengers Survived") +
+  xlab('Family Size') +ggtitle("family size & survival")
+theme_few()
+
+         #deviding the family sizes in 3 parts
 
 full$FsizeD[full$Fsize == 1] <- 'single'
-full$FsizeD[full$Fsize <= 4] <- 'small'
-full$FsizeD[full$Fsize >=5] <- 'large'
+full$FsizeD[full$Fsize <5 & full$Fsize>1] <- 'small'
+full$FsizeD[full$Fsize >5] <- 'large'
 
 mosaicplot(table(full$FsizeD , full$Survived), xlim=2,main ='Family Size by Survival', shade=TRUE)
 
