@@ -68,21 +68,27 @@ summary(full$Age) #The missing age is not randomly distributed across all classe
 hist(full$Age)      #but is rather concentrated amongst the passengers from 3rd class,
 g <-ggplot(full,aes(Age))+theme_minimal()+geom_histogram(binwidth=5)
 
+
 library(mice)
-imp<-mice(as.dataframe(full$Age))
-full$AgeClass = ifelse(full$Age<=10,1,
-                       ifelse(full$Age>10 & full$Age<=20,2,
-                              ifelse(full$Age>20 & full$Age<=35,3,4)))
-full$AgeClass = as.factor(full$AgeClass)
+library(VIM)
+full<-bind_rows(train,test)
 
-md.pattern(full[,!names(full) %in% c("Survived", "Name", "PassengerId", "Ticket", "AgeClass")])
+fullage<-data.frame(full$Age,full$Survived)
 
-marginplot(data.frame(full$Age, full$Pclass))
+aggr(full,col=c("green","yellow"),numbers=TRUE, labels=names(full))
+impuage<-mice(fullage, m=5, method = "pmm", matix=50, seed=500) #using mice 
+age<-complete(impuage,1)
 
-table(full[is.na(full$Age), "Pclass"])
+summary(impuage)
+impuage$imp$full.Age
+impuage$imp$full.Survived
+age<-complete(impuage,5)
+View(age1)
+age1<-age[,1]
 
-imp$Age <- mice(full[, !names(full) %in% c("Survived", "Name", "PassengerId", "Ticket", "AgeClass", "Cabin", "FamilyName")],m=8,maxit=8,meth='pmm',seed=251863)
+hist(age1, col = "blue", xlab = "Age", main = "Before imputation")
+hist(full$Age, col="green",xlab = "Age", main = "After imputation")
+histogram(full$Age, age1, col = c("green", "blue"),main="before and after imputation", xlab = "age", ylab="percent of total survived")histogram(full$Age, age1, col = c("green", "blue"),main="before and after imputation", xlab = "age")
 
-hist(imp$Age)
 
 
